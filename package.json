@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "NODE_ENV=production node ./src/bin/www",
-    "dev": "NODE_ENV=development nodemon ./src/bin/www",
+    "start": "cross-env NODE_ENV=production node ./src/bin/www",
+    "dev": "cross-env NODE_ENV=development nodemon ./src/bin/www",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "lint": "eslint .",
@@ -28,7 +28,8 @@
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^24.9.0",
     "nodemon": "^2.0.12",
-    "supertest": "^3.4.2"
+    "supertest": "^3.4.2",
+    "cross-env": "^7.0.3"
   },
   "jest": {
     "testEnvironment": "node"
