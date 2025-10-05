@@ -61,21 +61,34 @@ Get a range of verses
 ### 🔍 Advanced Search Endpoints
 
 #### `GET /search?q=<query>&field=<field>&exact=<true|false>`
-**Advanced search with full verses details including Surah names**
+**Intelligent tokenized search with relevance scoring and full verse details**
+
+**✨ Smart Features:**
+- **Ignores punctuation** - Searches work even with different punctuation marks
+- **Relevance scoring** - Results sorted by best match first
+- **Long phrase support** - Handles multi-word and long phrases
+- **Flexible matching** - Finds verses even if word order varies slightly
 
 **Parameters:**
-- `q` (required) - Search query (supports multi-word phrases like "ar rahman" or "most merciful")
+- `q` (required) - Search query (supports multi-word phrases, long text, any punctuation)
 - `field` (optional) - Search field: `translation` (default), `arabic`, `transliteration`, or `all`
-- `exact` (optional) - Exact phrase match: `true` or `false` (default)
+- `exact` (optional) - Exact phrase match: `true` or `false` (default uses smart tokenized search)
 
 **Examples:**
 ```
 /search?q=ar rahman
 /search?q=most merciful
+/search?q=is it you who know better, or Allah?' And who is a greater wrongdoer
 /search?q=incurred Your wrath
 /search?q=rahman&exact=true
 /search?q=الله&field=arabic
 ```
+
+**Scoring System:**
+- **Highest score** - Exact phrase match with same word order
+- **High score** - All words present in correct order
+- **Medium score** - All words present but different order
+- **Results automatically sorted by relevance!**
 
 **Response includes:**
 - Total matches
@@ -84,6 +97,7 @@ Get a range of verses
 - Full Arabic text
 - Full English translation
 - Transliteration
+- Relevance score (higher = better match)
 
 ---
 
