@@ -18,11 +18,15 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: 'https://furqan-api.vercel.app/api',
+        description: 'Production server'
+      },
+      {
+        url: 'http://localhost:3000/api',
         description: 'Development server'
       },
       {
-        url: 'http://localhost:3111',
+        url: 'http://localhost:3111/api',
         description: 'Alternative development server'
       }
     ],

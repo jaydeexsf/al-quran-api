@@ -18,10 +18,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Swagger API Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+// Swagger API Documentation as homepage
+app.use('/docs', swaggerUi.serve);
+app.get('/', swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Al-Quran API Documentation'
+  customSiteTitle: 'Furqan API - Al-Quran API Documentation'
+}));
+
+// Also available at /api-docs for backward compatibility
+app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Furqan API - Al-Quran API Documentation'
 }));
 
 // Swagger JSON endpoint
@@ -30,7 +37,7 @@ app.get('/api-docs.json', (req, res) => {
   res.send(swaggerSpec);
 });
 
-app.use('/', indexRouter);
+app.use('/api', indexRouter);
 
 app.use((req, res, next) => {
   next(createError.NotFound());
