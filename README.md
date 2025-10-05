@@ -3,8 +3,13 @@ RESTful Quran API with original Arabic text, English Translation, transliteratio
 
 ## Features
 ✨ **Advanced Search** - Multi-word phrases, Arabic text, transliteration, and cross-field search  
-📖 Full verses retrieval with Surah names  
-🔍 Partial and exact matching  
+📖 Full verse retrieval with Surah names  
+🔍 Partial and exact matching with relevance scoring  
+📚 **Juz & Manzil filtering** - Navigate by Quran divisions  
+🕌 **Sajdah verses** - All prostration verses flagged  
+📍 **Revelation type filtering** - Meccan vs Medinan verses  
+📏 **Verse length filtering** - Short, medium, or long verses  
+📄 **Pagination** - All endpoints support pagination  
 🌐 RESTful API with comprehensive endpoints  
 
 ## Web Data Extraction
@@ -37,6 +42,22 @@ npm test
 # Watch mode
 npm run test:watch
 ```
+
+---
+
+## 📚 Interactive API Documentation
+
+**Swagger UI Documentation:** `http://localhost:3000/api-docs`
+
+Once the server is running, visit the Swagger UI for:
+- ✅ **Interactive API testing** - Try endpoints directly in your browser
+- ✅ **Complete request/response examples**
+- ✅ **Parameter descriptions and validation**
+- ✅ **Schema definitions**
+
+**Swagger JSON:** `http://localhost:3000/api-docs.json`
+
+---
 ## API Endpoints
 
 ### Basic Endpoints
@@ -127,6 +148,35 @@ Simple keyword search in English translation
 
 ---
 
+### 📚 Filtering & Navigation Endpoints
+
+#### `GET /juz/:juzNum?page=1&limit=20`
+Get verses from a specific Juz (1-30)  
+**Example:** `/juz/1?page=1&limit=20` - First 20 verses of Juz 1
+
+#### `GET /manzil/:manzilNum?page=1&limit=20`
+Get verses from a specific Manzil (1-7)  
+**Example:** `/manzil/1?page=1&limit=50` - First 50 verses of Manzil 1
+
+#### `GET /filter/revelation/:type?page=1&limit=20`
+Filter verses by revelation type (`meccan` or `medinan`)  
+**Examples:**
+- `/filter/revelation/meccan?page=1&limit=20` - Meccan verses
+- `/filter/revelation/medinan?page=1&limit=20` - Medinan verses
+
+#### `GET /filter/length/:lengthType?page=1&limit=20`
+Filter verses by length (`short`, `medium`, or `long`)  
+**Examples:**
+- `/filter/length/short` - Short verses (≤10 words)
+- `/filter/length/medium` - Medium verses (11-30 words)
+- `/filter/length/long` - Long verses (>30 words)
+
+#### `GET /sajdah`
+Get all Sajdah (prostration) verses  
+**Returns:** All 15 Sajdah verses with type (obligatory/recommended)
+
+---
+
 ## Search Examples
 
 ### Multi-word phrase search:
@@ -174,7 +224,52 @@ GET /search?q=the opening&exact=true
       "verse_id": 3.1,
       "arabic_text": "الرَّحمٰنِ الرَّحيمِ",
       "translation": "the All-beneficent, the All-merciful,",
-      "transliteration": "ar-raḥmāni r-raḥīmi"
+      "transliteration": "ar-raḥmāni r-raḥīmi",
+      "relevance_score": 1150
+    }
+  ]
+}
+```
+
+### Filter Response (with Pagination):
+```json
+{
+  "results": [
+    {
+      "surah_number": 1,
+      "surah_name": "AL-FĀTIḤAH",
+      "surah_name_arabic": "الفاتحة",
+      "verse_number": 1,
+      "verse_id": 1.1,
+      "arabic_text": "بِسمِ اللَّهِ الرَّحمٰنِ الرَّحيمِ",
+      "translation": "In the Name of Allah,the All-beneficent, the All-merciful.",
+      "transliteration": "bi-smi llāhi r-raḥmāni r-raḥīmi",
+      "juz": 1,
+      "sajdah": null
+    }
+  ],
+  "total": 148,
+  "page": 1,
+  "limit": 20,
+  "totalPages": 8,
+  "juz": 1
+}
+```
+
+### Sajdah Verses Response:
+```json
+{
+  "total": 15,
+  "verses": [
+    {
+      "surah_number": 7,
+      "surah_name": "AL-AʿRĀF",
+      "verse_number": 206,
+      "sajdah_type": "recommended",
+      "juz": 9,
+      "arabic_text": "...",
+      "translation": "...",
+      "transliteration": "..."
     }
   ]
 }
@@ -182,5 +277,43 @@ GET /search?q=the opening&exact=true
 
 ---
 
+## Pagination
+
+All filter endpoints support pagination with query parameters:
+- `?page=1` - Page number (default: 1)
+- `?limit=20` - Results per page (default: 20)
+
+**Example:**
+```
+GET /juz/1?page=2&limit=50
+GET /filter/revelation/meccan?page=1&limit=100
+```
+
+---
+
+## API Summary
+
+| Endpoint | Description | Pagination |
+|----------|-------------|------------|
+| `GET /` | Quran statistics | ❌ |
+| `GET /:surah` | Full Surah | ❌ |
+| `GET /:surah/:verse` | Specific verse | ❌ |
+| `GET /:surah/:range` | Verse range | ❌ |
+| `GET /search?q=...` | Advanced search | ❌ |
+| `GET /search/arabic?q=...` | Arabic search | ❌ |
+| `GET /search/transliteration?q=...` | Transliteration search | ❌ |
+| `GET /search/all?q=...` | Search all fields | ❌ |
+| `GET /corpus/:keyword` | Legacy search | ❌ |
+| `GET /juz/:num` | Filter by Juz | ✅ |
+| `GET /manzil/:num` | Filter by Manzil | ✅ |
+| `GET /filter/revelation/:type` | Meccan/Medinan | ✅ |
+| `GET /filter/length/:type` | Verse length | ✅ |
+| `GET /sajdah` | Prostration verses | ❌ |
+
+---
+
 ## Contributing
 Due to the nature of web scraping, the JSON Quran may contain unnecessary information. Feel free to edit and improve the data structure!
+
+## License
+Open source - feel free to use and modify for your projects.
