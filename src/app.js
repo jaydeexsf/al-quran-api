@@ -3,6 +3,7 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
+const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 
@@ -27,6 +28,10 @@ const swaggerOptions = {
   customSiteTitle: 'Furqan API - Al-Quran API Documentation'
 };
 
+// Serve swagger-ui static files explicitly
+const swaggerUiPath = require('swagger-ui-dist').absolutePath();
+app.use(express.static(swaggerUiPath));
+
 // Swagger JSON endpoint (must be before swagger UI setup)
 app.get('/api-docs.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
@@ -36,9 +41,7 @@ app.get('/api-docs.json', (req, res) => {
 // API routes
 app.use('/api', indexRouter);
 
-// Swagger UI - serve static assets and setup
-// This should be after API routes to avoid conflicts
-app.use('/', swaggerUi.serve);
+// Swagger UI homepage
 app.get('/', swaggerUi.setup(swaggerSpec, swaggerOptions));
 
 app.use((req, res, next) => {
