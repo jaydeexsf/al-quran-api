@@ -22,17 +22,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Swagger API Documentation
+// Swagger API Documentation with CDN assets for Vercel compatibility
 const swaggerOptions = {
   customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Furqan API - Al-Quran API Documentation'
+  customSiteTitle: 'Furqan API - Al-Quran API Documentation',
+  swaggerOptions: {
+    url: '/api-docs.json'
+  }
 };
 
-// Serve swagger-ui static files explicitly
-const swaggerUiPath = require('swagger-ui-dist').absolutePath();
-app.use(express.static(swaggerUiPath));
-
-// Swagger JSON endpoint (must be before swagger UI setup)
+// Swagger JSON endpoint
 app.get('/api-docs.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
@@ -41,8 +40,44 @@ app.get('/api-docs.json', (req, res) => {
 // API routes
 app.use('/api', indexRouter);
 
-// Swagger UI homepage
-app.get('/', swaggerUi.setup(swaggerSpec, swaggerOptions));
+// Swagger UI homepage - using CDN for static assets
+app.get('/', (req, res) => {
+  res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Furqan API - Al-Quran API Documentation</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.0.0/swagger-ui.css" />
+  <style>
+    .swagger-ui .topbar { display: none }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5.0.0/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.0.0/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      window.ui = SwaggerUIBundle({
+        url: '/api-docs.json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+      });
+    };
+  </script>
+</body>
+</html>
+  `);
+});
 
 app.use((req, res, next) => {
   next(createError.NotFound());
