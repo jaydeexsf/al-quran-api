@@ -395,6 +395,7 @@ router.get('/:chapterId/:verseId', (req, res) => {
   const range = req.params.verseId.split('-');
   const start = range[0]
   const end = range[1]
+  const { fields } = req.query; // e.g., ?fields=transliteration,arabic
 
   let response = {};
   const chapterData = quran.chapters[chapter];
@@ -421,6 +422,34 @@ router.get('/:chapterId/:verseId', (req, res) => {
       "error": `resource not found`
     })
     return;
+  }
+
+  // Filter fields if requested
+  if (fields) {
+    const requestedFields = fields.split(',').map(f => f.trim());
+    const filterFields = (obj) => {
+      const filtered = {};
+      requestedFields.forEach(field => {
+        if (obj[field] !== undefined) {
+          filtered[field] = obj[field];
+        }
+      });
+      return filtered;
+    };
+
+    // Handle single verse or range of verses
+    if (typeof response === 'object' && !Array.isArray(response)) {
+      // Check if it's a single verse (has 'text' or 'arabic_text' property)
+      if (response.text || response.arabic_text || response.transliteration) {
+        response = filterFields(response);
+      } else {
+        // It's a collection of verses
+        response = Object.keys(response).reduce((acc, key) => {
+          acc[key] = filterFields(response[key]);
+          return acc;
+        }, {});
+      }
+    }
   }
 
   res.status(200)

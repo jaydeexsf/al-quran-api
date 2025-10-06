@@ -71,13 +71,22 @@ Responds with JSON including properties of the Quran (total surahs, verses, etc.
 Get entire Surah/Chapter (1-114)  
 **Example:** `/api/1` - Returns Surah Al-Fatiha with all verses
 
-#### `GET /api/:surah/:verse`
+#### `GET /api/:surah/:verse?fields=<field1,field2>`
 Get a specific Verse from a Surah  
-**Example:** `/api/1/1` - Returns first verse of Al-Fatiha
+**Example:** `/api/1/1` - Returns first verse of Al-Fatiha  
+**With field filtering:** `/api/1/1?fields=transliteration` - Returns only transliteration  
+**Multiple fields:** `/api/1/1?fields=transliteration,content` - Returns transliteration and Arabic text
 
-#### `GET /api/:surah/:range`
+**Available fields:**
+- `id` - Verse ID
+- `content` - Arabic text
+- `translation_eng` - English translation
+- `transliteration` - Transliteration
+
+#### `GET /api/:surah/:range?fields=<field1,field2>`
 Get a range of verses  
-**Example:** `/api/1/1-5` - Returns verses 1-5 of Al-Fatiha
+**Example:** `/api/1/1-5` - Returns verses 1-5 of Al-Fatiha  
+**With field filtering:** `/api/1/1-5?fields=transliteration` - Returns only transliteration for verses 1-5
 
 ---
 
@@ -179,29 +188,50 @@ Get all Sajdah (prostration) verses
 
 ---
 
-## Search Examples
+## Examples
 
-### Multi-word phrase search:
+### Field Filtering Examples:
+
+#### Get only transliteration of a verse:
+```
+GET /api/1/1?fields=transliteration
+```
+
+#### Get Arabic text and transliteration:
+```
+GET /api/1/1?fields=content,transliteration
+```
+
+#### Get only transliteration for a range of verses:
+```
+GET /api/1/1-7?fields=transliteration
+```
+
+---
+
+### Search Examples:
+
+#### Multi-word phrase search:
 ```
 GET /api/search?q=not%20of%20those%20who%20have%20incurred%20Your%20wrath
 ```
 
-### Long phrase search:
+#### Long phrase search:
 ```
 GET /api/search?q=perhaps%20preferable%20reading%20ghayral-maghḍūbi
 ```
 
-### Arabic search:
+#### Arabic search:
 ```
 GET /api/search/arabic?q=الرحمن
 ```
 
-### Search all fields:
+#### Search all fields:
 ```
 GET /api/search/all?q=rahman
 ```
 
-### Exact match:
+#### Exact match:
 ```
 GET /api/search?q=the%20opening&exact=true
 ```
@@ -209,6 +239,20 @@ GET /api/search?q=the%20opening&exact=true
 ---
 
 ## Response Format
+
+### Field Filtered Response:
+```json
+// GET /api/1/1?fields=transliteration
+{
+  "transliteration": "bi-smi llāhi r-raḥmāni r-raḥīmi"
+}
+
+// GET /api/1/1?fields=content,transliteration
+{
+  "content": "بِسمِ اللَّهِ الرَّحمٰنِ الرَّحيمِ",
+  "transliteration": "bi-smi llāhi r-raḥmāni r-raḥīmi"
+}
+```
 
 ### Advanced Search Response:
 ```json
@@ -295,22 +339,22 @@ GET /api/filter/revelation/meccan?page=1&limit=100
 
 ## API Summary
 
-| Endpoint | Description | Pagination |
-|----------|-------------|------------|
-| `GET /api/` | Quran statistics | ❌ |
-| `GET /api/:surah` | Full Surah | ❌ |
-| `GET /api/:surah/:verse` | Specific verse | ❌ |
-| `GET /api/:surah/:range` | Verse range | ❌ |
-| `GET /api/search?q=...` | Advanced search | ❌ |
-| `GET /api/search/arabic?q=...` | Arabic search | ❌ |
-| `GET /api/search/transliteration?q=...` | Transliteration search | ❌ |
-| `GET /api/search/all?q=...` | Search all fields | ❌ |
-| `GET /api/corpus/:keyword` | Legacy search | ❌ |
-| `GET /api/juz/:num` | Filter by Juz | ✅ |
-| `GET /api/manzil/:num` | Filter by Manzil | ✅ |
-| `GET /api/filter/revelation/:type` | Meccan/Medinan | ✅ |
-| `GET /api/filter/length/:type` | Verse length | ✅ |
-| `GET /api/sajdah` | Prostration verses | ❌ |
+| Endpoint | Description | Field Filtering | Pagination |
+|----------|-------------|-----------------|------------|
+| `GET /api/` | Quran statistics | ❌ | ❌ |
+| `GET /api/:surah` | Full Surah | ❌ | ❌ |
+| `GET /api/:surah/:verse` | Specific verse | ✅ | ❌ |
+| `GET /api/:surah/:range` | Verse range | ✅ | ❌ |
+| `GET /api/search?q=...` | Advanced search | ❌ | ❌ |
+| `GET /api/search/arabic?q=...` | Arabic search | ❌ | ❌ |
+| `GET /api/search/transliteration?q=...` | Transliteration search | ❌ | ❌ |
+| `GET /api/search/all?q=...` | Search all fields | ❌ | ❌ |
+| `GET /api/corpus/:keyword` | Legacy search | ❌ | ❌ |
+| `GET /api/juz/:num` | Filter by Juz | ❌ | ✅ |
+| `GET /api/manzil/:num` | Filter by Manzil | ❌ | ✅ |
+| `GET /api/filter/revelation/:type` | Meccan/Medinan | ❌ | ✅ |
+| `GET /api/filter/length/:type` | Verse length | ❌ | ✅ |
+| `GET /api/sajdah` | Prostration verses | ❌ | ❌ |
 
 ---
 
