@@ -177,6 +177,12 @@ const advancedSearch = (searchTerm, options = {}) => {
           matchFound = true;
         }
       }
+
+      // if (field === "Sepedi") {
+      //   if  (patt .test(verse.content)) {
+      //     matchFound = false
+      //   }
+      // }
       
       if (matchFound) {
         results.push({
