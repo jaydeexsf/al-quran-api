@@ -354,7 +354,7 @@ router.get('/sajdah', (req, res) => {
  *   get:
  *     summary: Get complete Surah
  *     tags: [Basic]
- *     description: Retrieve all verses from a specific Surah/Chapter
+ *     description: Retrieve all verses from a specific Surah/Chapter with optional field filtering
  *     parameters:
  *       - in: path
  *         name: surahNum
@@ -365,6 +365,12 @@ router.get('/sajdah', (req, res) => {
  *           maximum: 114
  *         description: Surah number (1-114)
  *         example: 1
+ *       - in: query
+ *         name: fields
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of fields to return (id, content, translation_eng, transliteration)
+ *         example: transliteration
  *     responses:
  *       200:
  *         description: Complete Surah with all verses
@@ -412,7 +418,52 @@ router.get('/:chapterId', (req, res) => {
     .json(response);
 });
 
-
+/**
+ * @swagger
+ * /{surahNum}/{verseNum}:
+ *   get:
+ *     summary: Get specific verse or verse range
+ *     tags: [Basic]
+ *     description: Retrieve a specific verse or range of verses from a Surah with optional field filtering
+ *     parameters:
+ *       - in: path
+ *         name: surahNum
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 114
+ *         description: Surah number (1-114)
+ *         example: 1
+ *       - in: path
+ *         name: verseNum
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Verse number or range (e.g., "1" or "1-5")
+ *         example: 1
+ *       - in: query
+ *         name: fields
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of fields to return (id, content, translation_eng, transliteration)
+ *         example: transliteration
+ *     responses:
+ *       200:
+ *         description: Verse or range of verses
+ *       400:
+ *         description: Invalid range
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Verse not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/:chapterId/:verseId', (req, res) => {
 
   const chapter = req.params.chapterId
