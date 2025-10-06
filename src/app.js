@@ -19,13 +19,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Swagger API Documentation as homepage
-app.use('/docs', swaggerUi.serve);
+app.use('/', swaggerUi.serve);
 app.get('/', swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Furqan API - Al-Quran API Documentation'
 }));
 
 // Also available at /api-docs for backward compatibility
+app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Furqan API - Al-Quran API Documentation'
