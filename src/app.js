@@ -27,21 +27,19 @@ const swaggerOptions = {
   customSiteTitle: 'Furqan API - Al-Quran API Documentation'
 };
 
-// Homepage - Swagger UI
-app.use('/', swaggerUi.serveFiles(swaggerSpec, swaggerOptions));
-app.get('/', swaggerUi.setup(swaggerSpec, swaggerOptions));
-
-// Also available at /api-docs for backward compatibility
-app.use('/api-docs', swaggerUi.serveFiles(swaggerSpec, swaggerOptions));
-app.get('/api-docs', swaggerUi.setup(swaggerSpec, swaggerOptions));
-
-// Swagger JSON endpoint
+// Swagger JSON endpoint (must be before swagger UI setup)
 app.get('/api-docs.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
 });
 
+// API routes
 app.use('/api', indexRouter);
+
+// Swagger UI - serve static assets and setup
+// This should be after API routes to avoid conflicts
+app.use('/', swaggerUi.serve);
+app.get('/', swaggerUi.setup(swaggerSpec, swaggerOptions));
 
 app.use((req, res, next) => {
   next(createError.NotFound());
