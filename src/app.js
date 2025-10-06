@@ -12,25 +12,28 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-app.use(helmet());
+// Configure helmet with relaxed CSP for Swagger UI
+app.use(helmet({
+  contentSecurityPolicy: false
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Swagger API Documentation as homepage
-app.use('/', swaggerUi.serve);
-app.get('/', swaggerUi.setup(swaggerSpec, {
+// Swagger API Documentation
+const swaggerOptions = {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Furqan API - Al-Quran API Documentation'
-}));
+};
+
+// Homepage - Swagger UI
+app.use('/', swaggerUi.serveFiles(swaggerSpec, swaggerOptions));
+app.get('/', swaggerUi.setup(swaggerSpec, swaggerOptions));
 
 // Also available at /api-docs for backward compatibility
-app.use('/api-docs', swaggerUi.serve);
-app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Furqan API - Al-Quran API Documentation'
-}));
+app.use('/api-docs', swaggerUi.serveFiles(swaggerSpec, swaggerOptions));
+app.get('/api-docs', swaggerUi.setup(swaggerSpec, swaggerOptions));
 
 // Swagger JSON endpoint
 app.get('/api-docs.json', (req, res) => {
