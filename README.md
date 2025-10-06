@@ -47,7 +47,7 @@ npm run test:watch
 
 ## 📚 Interactive API Documentation
 
-**Swagger UI Documentation:** `http://localhost:3000/api-docs`
+**Swagger UI Documentation:** `http://localhost:3000/` or `http://localhost:3000/api-docs`
 
 Once the server is running, visit the Swagger UI for:
 - ✅ **Interactive API testing** - Try endpoints directly in your browser
@@ -57,31 +57,33 @@ Once the server is running, visit the Swagger UI for:
 
 **Swagger JSON:** `http://localhost:3000/api-docs.json`
 
+**Base URL:** All API endpoints are prefixed with `/api`
+
 ---
 ## API Endpoints
 
 ### Basic Endpoints
 
-#### `GET /`
+#### `GET /api/`
 Responds with JSON including properties of the Quran (total surahs, verses, etc.)
 
-#### `GET /:surah`
+#### `GET /api/:surah`
 Get entire Surah/Chapter (1-114)  
-**Example:** `/1` - Returns Surah Al-Fatiha with all verses
+**Example:** `/api/1` - Returns Surah Al-Fatiha with all verses
 
-#### `GET /:surah/:verse`
+#### `GET /api/:surah/:verse`
 Get a specific Verse from a Surah  
-**Example:** `/1/1` - Returns first verse of Al-Fatiha
+**Example:** `/api/1/1` - Returns first verse of Al-Fatiha
 
-#### `GET /:surah/:range`
+#### `GET /api/:surah/:range`
 Get a range of verses  
-**Example:** `/1/1-5` - Returns verses 1-5 of Al-Fatiha
+**Example:** `/api/1/1-5` - Returns verses 1-5 of Al-Fatiha
 
 ---
 
 ### 🔍 Advanced Search Endpoints
 
-#### `GET /search?q=<query>&field=<field>&exact=<true|false>`
+#### `GET /api/search?q=<query>&field=<field>&exact=<true|false>`
 **Intelligent tokenized search with relevance scoring and full verse details**
 
 **✨ Smart Features:**
@@ -97,12 +99,12 @@ Get a range of verses
 
 **Examples:**
 ```
-/search?q=ar rahman
-/search?q=most merciful
-/search?q=is it you who know better, or Allah?' And who is a greater wrongdoer
-/search?q=incurred Your wrath
-/search?q=rahman&exact=true
-/search?q=الله&field=arabic
+/api/search?q=ar%20rahman
+/api/search?q=most%20merciful
+/api/search?q=is%20it%20you%20who%20know%20better%2C%20or%20Allah%3F%27%20And%20who%20is%20a%20greater%20wrongdoer
+/api/search?q=incurred%20Your%20wrath
+/api/search?q=rahman&exact=true
+/api/search?q=الله&field=arabic
 ```
 
 **Scoring System:**
@@ -122,56 +124,56 @@ Get a range of verses
 
 ---
 
-#### `GET /search/arabic?q=<arabic_text>`
+#### `GET /api/search/arabic?q=<arabic_text>`
 Search in Arabic text only  
-**Example:** `/search/arabic?q=الله` - Find all verses containing "الله"
+**Example:** `/api/search/arabic?q=الله` - Find all verses containing "الله"
 
 ---
 
-#### `GET /search/transliteration?q=<text>`
+#### `GET /api/search/transliteration?q=<text>`
 Search in transliteration only  
-**Example:** `/search/transliteration?q=ar-rahman` - Find verses with "ar-rahman" in transliteration
+**Example:** `/api/search/transliteration?q=ar-rahman` - Find verses with "ar-rahman" in transliteration
 
 ---
 
-#### `GET /search/all?q=<query>`
+#### `GET /api/search/all?q=<query>`
 Search across all fields (translation, Arabic, and transliteration)  
-**Example:** `/search/all?q=rahman` - Find "rahman" in any field
+**Example:** `/api/search/all?q=rahman` - Find "rahman" in any field
 
 ---
 
-#### `GET /corpus/:keyword` *(Legacy endpoint - backward compatible)*
+#### `GET /api/corpus/:keyword` *(Legacy endpoint - backward compatible)*
 Simple keyword search in English translation  
-**Example:** `/corpus/spider` - Returns verses containing "spider"
+**Example:** `/api/corpus/spider` - Returns verses containing "spider"
 
-**Note:** For multi-word searches, use the new `/search` endpoint instead.
+**Note:** For multi-word searches, use the new `/api/search` endpoint instead.
 
 ---
 
 ### 📚 Filtering & Navigation Endpoints
 
-#### `GET /juz/:juzNum?page=1&limit=20`
+#### `GET /api/juz/:juzNum?page=1&limit=20`
 Get verses from a specific Juz (1-30)  
-**Example:** `/juz/1?page=1&limit=20` - First 20 verses of Juz 1
+**Example:** `/api/juz/1?page=1&limit=20` - First 20 verses of Juz 1
 
-#### `GET /manzil/:manzilNum?page=1&limit=20`
+#### `GET /api/manzil/:manzilNum?page=1&limit=20`
 Get verses from a specific Manzil (1-7)  
-**Example:** `/manzil/1?page=1&limit=50` - First 50 verses of Manzil 1
+**Example:** `/api/manzil/1?page=1&limit=50` - First 50 verses of Manzil 1
 
-#### `GET /filter/revelation/:type?page=1&limit=20`
+#### `GET /api/filter/revelation/:type?page=1&limit=20`
 Filter verses by revelation type (`meccan` or `medinan`)  
 **Examples:**
-- `/filter/revelation/meccan?page=1&limit=20` - Meccan verses
-- `/filter/revelation/medinan?page=1&limit=20` - Medinan verses
+- `/api/filter/revelation/meccan?page=1&limit=20` - Meccan verses
+- `/api/filter/revelation/medinan?page=1&limit=20` - Medinan verses
 
-#### `GET /filter/length/:lengthType?page=1&limit=20`
+#### `GET /api/filter/length/:lengthType?page=1&limit=20`
 Filter verses by length (`short`, `medium`, or `long`)  
 **Examples:**
-- `/filter/length/short` - Short verses (≤10 words)
-- `/filter/length/medium` - Medium verses (11-30 words)
-- `/filter/length/long` - Long verses (>30 words)
+- `/api/filter/length/short` - Short verses (≤10 words)
+- `/api/filter/length/medium` - Medium verses (11-30 words)
+- `/api/filter/length/long` - Long verses (>30 words)
 
-#### `GET /sajdah`
+#### `GET /api/sajdah`
 Get all Sajdah (prostration) verses  
 **Returns:** All 15 Sajdah verses with type (obligatory/recommended)
 
@@ -181,27 +183,27 @@ Get all Sajdah (prostration) verses
 
 ### Multi-word phrase search:
 ```
-GET /search?q=not of those who have incurred Your wrath
+GET /api/search?q=not%20of%20those%20who%20have%20incurred%20Your%20wrath
 ```
 
 ### Long phrase search:
 ```
-GET /search?q=perhaps preferable reading ghayral-maghḍūbi
+GET /api/search?q=perhaps%20preferable%20reading%20ghayral-maghḍūbi
 ```
 
 ### Arabic search:
 ```
-GET /search/arabic?q=الرحمن
+GET /api/search/arabic?q=الرحمن
 ```
 
 ### Search all fields:
 ```
-GET /search/all?q=rahman
+GET /api/search/all?q=rahman
 ```
 
 ### Exact match:
 ```
-GET /search?q=the opening&exact=true
+GET /api/search?q=the%20opening&exact=true
 ```
 
 ---
@@ -285,8 +287,8 @@ All filter endpoints support pagination with query parameters:
 
 **Example:**
 ```
-GET /juz/1?page=2&limit=50
-GET /filter/revelation/meccan?page=1&limit=100
+GET /api/juz/1?page=2&limit=50
+GET /api/filter/revelation/meccan?page=1&limit=100
 ```
 
 ---
@@ -295,20 +297,20 @@ GET /filter/revelation/meccan?page=1&limit=100
 
 | Endpoint | Description | Pagination |
 |----------|-------------|------------|
-| `GET /` | Quran statistics | ❌ |
-| `GET /:surah` | Full Surah | ❌ |
-| `GET /:surah/:verse` | Specific verse | ❌ |
-| `GET /:surah/:range` | Verse range | ❌ |
-| `GET /search?q=...` | Advanced search | ❌ |
-| `GET /search/arabic?q=...` | Arabic search | ❌ |
-| `GET /search/transliteration?q=...` | Transliteration search | ❌ |
-| `GET /search/all?q=...` | Search all fields | ❌ |
-| `GET /corpus/:keyword` | Legacy search | ❌ |
-| `GET /juz/:num` | Filter by Juz | ✅ |
-| `GET /manzil/:num` | Filter by Manzil | ✅ |
-| `GET /filter/revelation/:type` | Meccan/Medinan | ✅ |
-| `GET /filter/length/:type` | Verse length | ✅ |
-| `GET /sajdah` | Prostration verses | ❌ |
+| `GET /api/` | Quran statistics | ❌ |
+| `GET /api/:surah` | Full Surah | ❌ |
+| `GET /api/:surah/:verse` | Specific verse | ❌ |
+| `GET /api/:surah/:range` | Verse range | ❌ |
+| `GET /api/search?q=...` | Advanced search | ❌ |
+| `GET /api/search/arabic?q=...` | Arabic search | ❌ |
+| `GET /api/search/transliteration?q=...` | Transliteration search | ❌ |
+| `GET /api/search/all?q=...` | Search all fields | ❌ |
+| `GET /api/corpus/:keyword` | Legacy search | ❌ |
+| `GET /api/juz/:num` | Filter by Juz | ✅ |
+| `GET /api/manzil/:num` | Filter by Manzil | ✅ |
+| `GET /api/filter/revelation/:type` | Meccan/Medinan | ✅ |
+| `GET /api/filter/length/:type` | Verse length | ✅ |
+| `GET /api/sajdah` | Prostration verses | ❌ |
 
 ---
 
