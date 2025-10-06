@@ -2,9 +2,9 @@
    "version": 2,
    "name": "al-quran-api",
    "builds": [
-      { "src": "src/bin/www.js", "use": "@vercel/node" }
+      { "src": "api/index.js", "use": "@vercel/node" }
    ],
    "routes": [
-      { "src": "/(.*)", "dest": "/src/bin/www.js" }
+      { "src": "/(.*)", "dest": "/api/index.js" }
    ]
 }
