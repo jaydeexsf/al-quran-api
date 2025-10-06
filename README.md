@@ -67,9 +67,10 @@ Once the server is running, visit the Swagger UI for:
 #### `GET /api/`
 Responds with JSON including properties of the Quran (total surahs, verses, etc.)
 
-#### `GET /api/:surah`
+#### `GET /api/:surah?fields=<field1,field2>`
 Get entire Surah/Chapter (1-114)  
-**Example:** `/api/1` - Returns Surah Al-Fatiha with all verses
+**Example:** `/api/1` - Returns Surah Al-Fatiha with all verses  
+**With field filtering:** `/api/1?fields=transliteration` - Returns only transliteration for all verses in Surah 1
 
 #### `GET /api/:surah/:verse?fields=<field1,field2>`
 Get a specific Verse from a Surah  
@@ -191,6 +192,11 @@ Get all Sajdah (prostration) verses
 ## Examples
 
 ### Field Filtering Examples:
+
+#### Get only transliteration of entire Surah:
+```
+GET /api/1?fields=transliteration
+```
 
 #### Get only transliteration of a verse:
 ```
@@ -342,7 +348,7 @@ GET /api/filter/revelation/meccan?page=1&limit=100
 | Endpoint | Description | Field Filtering | Pagination |
 |----------|-------------|-----------------|------------|
 | `GET /api/` | Quran statistics | ❌ | ❌ |
-| `GET /api/:surah` | Full Surah | ❌ | ❌ |
+| `GET /api/:surah` | Full Surah | ✅ | ❌ |
 | `GET /api/:surah/:verse` | Specific verse | ✅ | ❌ |
 | `GET /api/:surah/:range` | Verse range | ✅ | ❌ |
 | `GET /api/search?q=...` | Advanced search | ❌ | ❌ |

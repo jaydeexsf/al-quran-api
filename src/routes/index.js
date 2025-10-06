@@ -376,14 +376,38 @@ router.get('/sajdah', (req, res) => {
  *               $ref: '#/components/schemas/Error'
  */
 router.get('/:chapterId', (req, res) => {
+  const { fields } = req.query; // e.g., ?fields=transliteration
 
-  const response = quran.chapters[req.params.chapterId]
+  let response = quran.chapters[req.params.chapterId]
   if (!response) {
     res.status(404).json({
       "error": `resource not found`
     })
     return;
   }
+
+  // Filter fields if requested
+  if (fields && response.verses) {
+    const requestedFields = fields.split(',').map(f => f.trim());
+    const filteredVerses = {};
+    
+    Object.keys(response.verses).forEach(verseNum => {
+      const verse = response.verses[verseNum];
+      const filtered = {};
+      requestedFields.forEach(field => {
+        if (verse[field] !== undefined) {
+          filtered[field] = verse[field];
+        }
+      });
+      filteredVerses[verseNum] = filtered;
+    });
+    
+    response = {
+      ...response,
+      verses: filteredVerses
+    };
+  }
+
   res.status(200)
     .json(response);
 });
